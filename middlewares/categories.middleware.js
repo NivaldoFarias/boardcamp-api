@@ -9,10 +9,10 @@ export async function validateCategory(req, res, next) {
 
   const validate = CategorySchema.validate({ name }, { abortEarly: false });
   if (validate.error) {
-    console.log(chalk.red(`${ERROR} ${validate.error.details.map((e) => e.message).join(', ')}`));
+    console.log(chalk.red(`${ERROR} ${validate.error.details.map((e) => e.message).join('; ')}`));
     return res.status(400).send({
       message: 'Invalid input',
-      details: `${validate.error.details.map((e) => e.message).join(', ')}`,
+      detail: validate.error.details.map((e) => e.message.replaceAll('"', '')).join('; '),
     });
   }
 
