@@ -1,7 +1,10 @@
-import { Pool } from 'pg';
+import pg from 'pg';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+const { Client } = pg;
+const connectionString = process.env.DATABASE_URL;
+const client = new Client({ connectionString });
+client.connect();
 
-export default pool;
+export default client;

@@ -19,7 +19,7 @@
   "plugins": ["prettier"],
   "root": true,
   "rules": {
-    "prettier/prettier": "error",
+    "prettier/prettier": "warn",
     "import/extensions": "off",
     "no-underscore-dangle": "off"
   }

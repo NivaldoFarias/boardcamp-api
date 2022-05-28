@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 
-import pool from './../database/postgres.js';
+import client from './../database/postgres.js';
 import { DATABASE, ERROR } from './../blueprint/chalk.js';
 
 export async function listAllCategories(_req, res) {
   try {
-    const result = await pool.query(`SELECT * FROM categories;`);
+    const result = await client.query(`SELECT * FROM categories;`);
 
     console.log(chalk.blue(`${DATABASE} ${result.rows}`));
     res.status(200).send(result.rows);
@@ -22,10 +22,7 @@ export async function newCategory(_req, res) {
   const { name } = res.locals;
 
   try {
-    const result = await pool.query(
-      `INSERT INTO categories (name) VALUES ($1);`,
-      [name],
-    );
+    const result = await client.query(`INSERT INTO categories (name) VALUES ($1);`, [name]);
 
     console.log(chalk.blue(`${DATABASE} ${result}`));
     res.sendStatus(201);
