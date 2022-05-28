@@ -6,12 +6,12 @@ import {
   categoryExists,
   checkGame,
 } from './../middlewares/games.middleware.js';
-import * as games from './../controllers/games.controller.js';
+import { listAllGames, newGame } from './../controllers/games.controller.js';
 
 const PATH = '/games';
 const gamesRouter = express.Router();
 
-gamesRouter.get(PATH, games.listAllGames);
-gamesRouter.post(PATH, validateGame, checkUrl, categoryExists, checkGame, games.newGame);
+gamesRouter.get(PATH, listAllGames);
+gamesRouter.post(PATH, validateGame, checkUrl, categoryExists, checkGame, newGame);
 
 export default gamesRouter;

@@ -1,12 +1,12 @@
 import express from 'express';
 
 import { validateCategory, checkCategory } from './../middlewares/categories.middleware.js';
-import * as categories from './../controllers/categories.controller.js';
+import { listAllCategories, newCategory } from './../controllers/categories.controller.js';
 
 const PATH = '/categories';
 const categoriesRouter = express.Router();
 
-categoriesRouter.get(PATH, categories.listAllCategories);
-categoriesRouter.post(PATH, validateCategory, checkCategory, categories.newCategory);
+categoriesRouter.get(PATH, listAllCategories);
+categoriesRouter.post(PATH, validateCategory, checkCategory, newCategory);
 
 export default categoriesRouter;
