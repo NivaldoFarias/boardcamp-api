@@ -5,9 +5,8 @@ import { DATABASE, ERROR } from './../blueprint/chalk.js';
 
 export async function listAllRentals(_req, res) {
   const {
-    query: { offset, limit, orderBy, conditional, test },
+    query: { offset, limit, orderBy, conditional },
   } = res.locals;
-  console.log(chalk.bold.magenta(`[LOG] After: ${test}`));
   try {
     const result = await client.query(
       `${selectRentals()} ${conditional} ${orderBy} ${offset} ${limit};`,
@@ -102,6 +101,25 @@ export async function deleteRental(_req, res) {
     console.log(chalk.red(`${ERROR} Internal server error`));
     return res.status(500).send({
       message: `Internal server error while deleting rental entry`,
+      detail: error,
+    });
+  }
+}
+
+export async function getMetrics(_req, res) {
+  const { interval } = res.locals;
+
+  try {
+    const result = await client.query(
+      `SELECT SUM ("originalPrice") AS revenue, count(*) AS rentals FROM rentals ${interval};`,
+    );
+    const output = { ...result.rows[0], average: result.rows[0].revenue / result.rows[0].rentals };
+    console.log(chalk.blue(`${DATABASE} Metrics sent`));
+    return res.status(200).send(output);
+  } catch (error) {
+    console.log(chalk.red(`${ERROR} Internal server error`));
+    return res.status(500).send({
+      message: `Internal server error while getting metrics`,
       detail: error,
     });
   }

@@ -11,17 +11,20 @@ import {
   reduceGameStock,
   conditionalIds,
   rentalsQuery,
+  metricsQuery,
 } from './../middlewares/rentals.middleware.js';
 import {
   listAllRentals,
   newRental,
   returnRental,
   deleteRental,
+  getMetrics,
 } from './../controllers/rentals.controller.js';
 
 const PATH = '/rentals';
 const rentalsRouter = express.Router();
 
+rentalsRouter.get(`${PATH}/metri`, metricsQuery, getMetrics);
 rentalsRouter.get(
   PATH,
   getQueryData,

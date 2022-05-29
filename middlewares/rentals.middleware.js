@@ -203,3 +203,21 @@ export async function rentalsQuery(req, res, next) {
   res.locals.query = { ...res.locals.query, conditional };
   next();
 }
+
+export async function metricsQuery(req, res, next) {
+  let interval = '';
+
+  if (req.query?.startDate) {
+    const startDate = new Date(req.query.startDate);
+    const dateISO = startDate.toISOString();
+    interval += `WHERE "rentDate" >= ${dateISO}`;
+  }
+  if (req.query?.endDate) {
+    const endDate = new Date(req.query.endDate);
+    const endDateISO = endDate.toISOString();
+    interval += ` AND "rentDate" <= ${endDateISO}`;
+  }
+
+  res.locals.interval = interval;
+  next();
+}
