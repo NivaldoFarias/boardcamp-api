@@ -14,6 +14,6 @@ const customersRouter = express.Router();
 customersRouter.get(PATH, listAllCustomers);
 customersRouter.post(PATH, validateCustomer, checkCpf, newCustomer);
 customersRouter.get(`${PATH}/:id`, findCustomer, fetchCustomer);
-customersRouter.put(`${PATH}/:id`, findCustomer, updateCustomer);
+customersRouter.put(`${PATH}/:id`, validateCustomer, checkCpf, updateCustomer);
 
 export default customersRouter;

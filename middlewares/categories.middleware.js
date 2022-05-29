@@ -16,7 +16,7 @@ export async function validateCategory(req, res, next) {
     });
   }
 
-  console.log(chalk.magenta(`${MIDDLEWARE} Category validated`));
+  console.log(chalk.magenta(`${MIDDLEWARE} Category schema validated`));
   res.locals.name = name;
   next();
 }

@@ -18,7 +18,7 @@ export async function validateRental(req, res, next) {
     });
   }
 
-  console.log(chalk.magenta(`${MIDDLEWARE} Rental validated`));
+  console.log(chalk.magenta(`${MIDDLEWARE} Rental schema validated`));
   res.locals.rental = { customerId, gameId, daysRented };
   next();
 }

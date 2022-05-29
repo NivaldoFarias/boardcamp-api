@@ -20,7 +20,7 @@ export async function validateGame(req, res, next) {
     });
   }
 
-  console.log(chalk.magenta(`${MIDDLEWARE} Game validated`));
+  console.log(chalk.magenta(`${MIDDLEWARE} Game schema validated`));
   res.locals.game = { name, image, stockTotal, categoryId, pricePerDay };
   next();
 }

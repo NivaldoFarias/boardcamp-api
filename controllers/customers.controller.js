@@ -13,9 +13,7 @@ export async function listAllCustomers(_req, res) {
             chalk.blue(
               `${DATABASE} id: ${chalk.bold(row.id)} | name: ${chalk.bold(
                 row.name,
-              )} | phone: ${chalk.bold(row.phone)} | cpf: ${chalk.bold(
-                row.cpf,
-              )} birthday: ${chalk.bold(row.birthday)}`,
+              )} | phone: ${chalk.bold(row.phone)} | cpf: ${chalk.bold(row.cpf)}`,
             ),
           );
         })
@@ -56,10 +54,11 @@ export async function fetchCustomer(_req, res) {
   return res.status(200).send(customer);
 }
 
-export async function updateCustomer(_req, res) {
+export async function updateCustomer(req, res) {
   const {
-    customer: { name, phone, cpf, birthday, id },
+    customer: { name, phone, cpf, birthday },
   } = res.locals;
+  const { id } = req.params;
 
   try {
     await client.query(
@@ -71,7 +70,7 @@ export async function updateCustomer(_req, res) {
         cpf = $3, 
         birthday = $4
       WHERE 
-        id = $5`,
+        id = $5;`,
       [name, phone, cpf, birthday, id],
     );
 

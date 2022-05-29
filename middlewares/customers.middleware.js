@@ -16,7 +16,7 @@ export async function validateCustomer(req, res, next) {
     });
   }
 
-  console.log(chalk.magenta(`${MIDDLEWARE} Customer validated`));
+  console.log(chalk.magenta(`${MIDDLEWARE} Customer schema validated`));
   res.locals.customer = { name, phone, cpf, birthday };
   next();
 }
@@ -42,7 +42,9 @@ export async function findCustomer(req, res, next) {
     });
   }
 
-  console.log(chalk.blue(`${MIDDLEWARE} Customer found`));
+  console.log(
+    chalk.magenta(`${MIDDLEWARE} Customer '${chalk.bold(res.locals.customer.name)}' found`),
+  );
   next();
 }
 
@@ -51,7 +53,7 @@ export async function checkCpf(_req, res, next) {
 
   try {
     const result = await client.query(`SELECT * FROM customers WHERE cpf = $1;`, [cpf]);
-    if (result.rowCount > 0) {
+    if (result.rowCount > 0 && result.rows[0].cpf !== cpf) {
       console.log(chalk.red(`${ERROR} Cpf already registered`));
       return res.status(409).send({
         message: `Cpf already registered`,
