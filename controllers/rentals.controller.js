@@ -25,20 +25,18 @@ export async function listAllRentals(_req, res) {
   }
 
   async function possibleQueries() {
-    let result = null;
     if (customerId && gameId) {
-      result = await client.query(`${selectRentals()} WHERE "customerId" = $1 AND "gameId" = $2;`, [
+      return await client.query(`${selectRentals()} WHERE "customerId" = $1 AND "gameId" = $2;`, [
         customerId,
         gameId,
       ]);
     } else if (gameId && !customerId) {
-      result = await client.query(`${selectRentals()} WHERE "gameId" = $1;`, [gameId]);
+      return await client.query(`${selectRentals()} WHERE "gameId" = $1;`, [gameId]);
     } else if (customerId && !gameId) {
-      result = await client.query(`${selectRentals()} WHERE "customerId" = $1;`, [customerId]);
-    } else {
-      result = await client.query(selectRentals());
+      return await client.query(`${selectRentals()} WHERE "customerId" = $1;`, [customerId]);
+    } else if (!customerId && !gameId) {
+      return await client.query(selectRentals());
     }
-    return result;
   }
 }
 
@@ -138,25 +136,25 @@ const normalizeResult = (rentals) => {
 
 const selectRentals = () => {
   return `SELECT 
-          rentals.*,
-          customers.name AS "customerName",
-          games.name AS "gameName",
-          categories.id AS "categoryId",
-          categories.name AS "categoryName",
-        FROM 
-          rentals
-        INNER JOIN
-          customers
-        ON
-          rentals."customerId" = customers.id
-        INNER JOIN
-          games
-        ON
-          rentals."gameId" = games.id
-        INNER JOIN
-          categories
-        ON
-          games."categoryId" = categories.id`;
+    rentals.*,
+    customers.name AS "customerName",
+    games.name AS "gameName",
+    categories.id AS "categoryId",
+    categories.name AS "categoryName",
+    FROM 
+      rentals
+    INNER JOIN
+      customers
+    ON
+      rentals."customerId" = customers.id
+    INNER JOIN
+      games
+    ON
+      rentals."gameId" = games.id
+    INNER JOIN
+      categories
+    ON
+      games."categoryId" = categories.id`;
 };
 
 const getDate = () => {

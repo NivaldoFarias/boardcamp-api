@@ -1,15 +1,14 @@
 import chalk from 'chalk';
-import urlExist from 'url-exist';
 
 import { MIDDLEWARE, ERROR } from './../blueprint/chalk.js';
-import GameSchema from './../models/game.model.js';
+import RentalSchema from './../models/rental.model.js';
 import client from './../database/postgres.js';
 
 // RENTALS MIDDLEWARE
 export async function validateRental(req, res, next) {
   const { customerId, gameId, daysRented } = req.body;
 
-  const validate = GameSchema.validate({ customerId, gameId, daysRented }, { abortEarly: false });
+  const validate = RentalSchema.validate({ customerId, gameId, daysRented }, { abortEarly: false });
   if (validate.error) {
     console.log(chalk.red(`${ERROR} Invalid input data`));
     return res.status(400).send({
@@ -18,7 +17,7 @@ export async function validateRental(req, res, next) {
     });
   }
 
-  console.log(chalk.magenta(`${MIDDLEWARE} Rental schema validated`));
+  console.log(chalk.bold.magenta(`${MIDDLEWARE} Rental schema validated`));
   res.locals.rental = { customerId, gameId, daysRented };
   next();
 }
@@ -52,7 +51,7 @@ export async function findRental(req, res, next) {
     });
   }
 
-  console.log(chalk.blue(`${MIDDLEWARE} Rental found`));
+  console.log(chalk.bold.magenta(`${MIDDLEWARE} Rental found`));
   next();
 }
 
@@ -69,7 +68,7 @@ export async function rentalIsOngoing(_req, res, next) {
     });
   }
 
-  console.log(chalk.blue(`${MIDDLEWARE} Rental is ongoing`));
+  console.log(chalk.bold.magenta(`${MIDDLEWARE} Rental is ongoing`));
   next();
 }
 
@@ -79,27 +78,28 @@ export async function findCustomer(_req, res, next) {
     rental: { customerId },
   } = res.locals;
 
-  if (!customerId) next();
-
-  try {
-    const result = await client.query(`SELECT * FROM customers WHERE id = $1;`, [customerId]);
-    if (!result.rows.length) {
-      console.log(chalk.red(`${ERROR} Customer not found`));
-      return res.status(400).send({
-        message: 'Customer not found',
-        detail: `Ensure to provide a valid customer id`,
+  if (customerId) {
+    try {
+      const result = await client.query(`SELECT * FROM customers WHERE id = $1;`, [customerId]);
+      if (!result.rows.length) {
+        console.log(chalk.red(`${ERROR} Customer not found`));
+        return res.status(400).send({
+          message: 'Customer not found',
+          detail: `Ensure to provide a valid customer id`,
+        });
+      }
+      res.locals.customer = result.rows[0];
+    } catch (error) {
+      console.log(chalk.red(`${ERROR} Internal server error`));
+      return res.status(500).send({
+        message: `Internal server error while getting customer`,
+        detail: error,
       });
     }
-    res.locals.customer = result.rows[0];
-  } catch (error) {
-    console.log(chalk.red(`${ERROR} Internal server error`));
-    return res.status(500).send({
-      message: `Internal server error while getting customer`,
-      detail: error,
-    });
+
+    console.log(chalk.bold.magenta(`${MIDDLEWARE} Customer found`));
   }
 
-  console.log(chalk.blue(`${MIDDLEWARE} Customer found`));
   next();
 }
 
@@ -109,27 +109,27 @@ export async function findGame(_req, res, next) {
     rental: { gameId },
   } = res.locals;
 
-  if (!gameId) next();
-
-  try {
-    const result = await client.query(`SELECT * FROM games WHERE id = $1;`, [gameId]);
-    if (!result.rows.length) {
-      console.log(chalk.red(`${ERROR} Game not found`));
-      return res.status(400).send({
-        message: 'Game not found',
-        detail: `Ensure to provide a valid game id`,
+  if (gameId) {
+    try {
+      const result = await client.query(`SELECT * FROM games WHERE id = $1;`, [gameId]);
+      if (!result.rows.length) {
+        console.log(chalk.red(`${ERROR} Game not found`));
+        return res.status(400).send({
+          message: 'Game not found',
+          detail: `Ensure to provide a valid game id`,
+        });
+      }
+      res.locals.game = result.rows[0];
+    } catch (error) {
+      console.log(chalk.red(`${ERROR} Internal server error`));
+      return res.status(500).send({
+        message: `Internal server error while getting game`,
+        detail: error,
       });
     }
-    res.locals.game = result.rows[0];
-  } catch (error) {
-    console.log(chalk.red(`${ERROR} Internal server error`));
-    return res.status(500).send({
-      message: `Internal server error while getting game`,
-      detail: error,
-    });
+    console.log(chalk.bold.magenta(`${MIDDLEWARE} Game found`));
   }
 
-  console.log(chalk.blue(`${MIDDLEWARE} Game found`));
   next();
 }
 
