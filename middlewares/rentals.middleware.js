@@ -163,7 +163,7 @@ export async function reduceGameStock(_req, res, next) {
 }
 
 // QUERY DATA MIDDLEWARE
-export async function getQueryData(req, res, next) {
+export async function conditionalIds(req, res, next) {
   let conditional = '';
   const customerId = req.query?.customerId;
   const gameId = req.query?.gameId;
@@ -178,14 +178,28 @@ export async function getQueryData(req, res, next) {
     conditional = `WHERE "gameId" = ${SqlString.escape(gameId)}`;
   }
 
-  const offset = req.query?.offset ? `OFFSET ${SqlString.escape(req.query.offset)}` : '';
-  const limit = req.query?.limit ? `LIMIT ${SqlString.escape(req.query.limit)}` : '';
-  const orderDirection = req.query?.desc ? 'DESC' : '';
-  const orderBy = req.query?.order
-    ? `ORDER BY ${SqlString.escape(req.query.order)} ${orderDirection}`
-    : '';
+  res.locals.query = { ...res.locals.query, conditional };
+  res.locals.rental = { ...res.locals.rental, customerId, gameId };
+  next();
+}
 
-  res.locals.query = { offset, limit, orderBy, conditional };
-  res.locals.rental = { customerId, gameId };
+export async function rentalsQuery(req, res, next) {
+  let {
+    query: { conditional },
+  } = res.locals;
+
+  if (req.query?.status === 'open') {
+    conditional = `${conditional} AND "returnDate" IS NULL`;
+  } else if (req.query?.status === 'closed') {
+    conditional = `${conditional} AND "returnDate" IS NOT NULL`;
+  }
+
+  if (req.query?.startDate) {
+    const startDate = new Date(req.query.startDate);
+    const dateISO = startDate.toISOString();
+    conditional = `${conditional} AND "rentDate" >= ${dateISO}`;
+  }
+
+  res.locals.query = { ...res.locals.query, conditional };
   next();
 }

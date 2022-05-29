@@ -5,9 +5,9 @@ import { DATABASE, ERROR } from './../blueprint/chalk.js';
 
 export async function listAllRentals(_req, res) {
   const {
-    query: { offset, limit, orderBy, conditional },
+    query: { offset, limit, orderBy, conditional, test },
   } = res.locals;
-
+  console.log(chalk.bold.magenta(`[LOG] After: ${test}`));
   try {
     const result = await client.query(
       `${selectRentals()} ${conditional} ${orderBy} ${offset} ${limit};`,

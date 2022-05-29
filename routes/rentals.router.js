@@ -1,14 +1,16 @@
 import express from 'express';
 
+import { getQueryData } from './../middlewares/global.middleware.js';
 import {
   validateRental,
-  getQueryData,
   findRental,
   rentalIsOngoing,
   findCustomer,
   findGame,
   gameInStock,
   reduceGameStock,
+  conditionalIds,
+  rentalsQuery,
 } from './../middlewares/rentals.middleware.js';
 import {
   listAllRentals,
@@ -20,7 +22,15 @@ import {
 const PATH = '/rentals';
 const rentalsRouter = express.Router();
 
-rentalsRouter.get(PATH, getQueryData, findCustomer, findGame, listAllRentals);
+rentalsRouter.get(
+  PATH,
+  getQueryData,
+  conditionalIds,
+  rentalsQuery,
+  findCustomer,
+  findGame,
+  listAllRentals,
+);
 rentalsRouter.post(
   PATH,
   validateRental,

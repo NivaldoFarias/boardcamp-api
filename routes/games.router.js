@@ -1,11 +1,11 @@
 import express from 'express';
 
+import { getQueryData } from './../middlewares/global.middleware.js';
 import {
   validateGame,
   checkUrl,
   categoryExists,
   checkGame,
-  getQueryData,
 } from './../middlewares/games.middleware.js';
 import { listAllGames, newGame } from './../controllers/games.controller.js';
 

@@ -1,11 +1,7 @@
 import express from 'express';
 
-import {
-  validateCustomer,
-  findCustomer,
-  checkCpf,
-  getQueryData,
-} from './../middlewares/customers.middleware.js';
+import { getQueryData } from './../middlewares/global.middleware.js';
+import { validateCustomer, findCustomer, checkCpf } from './../middlewares/customers.middleware.js';
 import {
   listAllCustomers,
   newCustomer,
