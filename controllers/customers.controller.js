@@ -9,7 +9,18 @@ export async function listAllCustomers(_req, res) {
   } = res.locals;
 
   try {
-    const result = await client.query(`SELECT * FROM customers ${orderBy} ${offset} ${limit};`);
+    const result = await client.query(`SELECT 
+        customers.*,
+        COUNT(customers.id) AS "rentalsCount" 
+      FROM 
+        customers 
+      INNER JOIN
+        rentals
+      ON 
+        customers.id = rentals."customerId"
+      GROUP BY
+        customers.id
+      ${orderBy} ${offset} ${limit};`);
 
     result.rows.length
       ? console.log(

@@ -9,7 +9,20 @@ export async function listAllGames(_req, res) {
   } = res.locals;
 
   try {
-    const result = await client.query(`SELECT * FROM games ${orderBy} ${offset} ${limit};`);
+    const result = await client.query(
+      `SELECT 
+        games.*,
+        COUNT(games.id) AS "rentalsCount" 
+      FROM 
+        games 
+      INNER JOIN
+        rentals
+      ON 
+        games.id = rentals."gameId"
+      GROUP BY
+        games.id
+      ${orderBy} ${offset} ${limit};`,
+    );
 
     result.rows.length
       ? console.log(
