@@ -2,7 +2,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/NivaldoFarias/boardcamp">
+  <a href="https://github.com/NivaldoFarias/boardcamp-api">
     <img src="https://raw.githubusercontent.com/bootcamp-ra/boardcamp-front/main/src/assets/images/logo.png" alt="Logo" width="160">
   </a>
 
@@ -11,7 +11,7 @@
   <p align="center">
     Back end Development Project
     <br />
-    <a href="https://github.com/NivaldoFarias/boardcamp/tree/main/app.js"><strong>Browse Nodejs code»</strong></a>
+    <a href="https://github.com/NivaldoFarias/boardcamp-api/tree/main/app.js"><strong>Browse Nodejs code»</strong></a>
 </div>
 
 <br />
