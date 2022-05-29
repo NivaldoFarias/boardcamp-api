@@ -49,11 +49,11 @@ export async function findCustomer(req, res, next) {
 }
 
 export async function checkCpf(_req, res, next) {
-  const { cpf } = res.locals.customer;
+  const { cpf, id } = res.locals.customer;
 
   try {
     const result = await client.query(`SELECT * FROM customers WHERE cpf = $1;`, [cpf]);
-    if (result.rowCount > 0 && result.rows[0].cpf !== cpf) {
+    if (result.rowCount > 0 && result.rows[0].id !== id) {
       console.log(chalk.red(`${ERROR} Cpf already registered`));
       return res.status(409).send({
         message: `Cpf already registered`,
@@ -69,5 +69,17 @@ export async function checkCpf(_req, res, next) {
   }
 
   console.log(chalk.magenta(`${MIDDLEWARE} Cpf is unique`));
+  next();
+}
+
+export async function getQueryData(req, res, next) {
+  const offset = req.query?.offset ? `OFFSET ${SqlString.escape(req.query.offset)}` : '';
+  const limit = req.query?.limit ? `LIMIT ${SqlString.escape(req.query.limit)}` : '';
+  const orderDirection = req.query?.desc ? 'DESC' : '';
+  const orderBy = req.query?.order
+    ? `ORDER BY ${SqlString.escape(req.query.order)} ${orderDirection}`
+    : '';
+
+  res.locals.query = { offset, limit, orderBy };
   next();
 }

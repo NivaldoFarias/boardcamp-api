@@ -8,6 +8,7 @@ import {
   findCustomer,
   findGame,
   gameInStock,
+  reduceGameStock,
 } from './../middlewares/rentals.middleware.js';
 import {
   listAllRentals,
@@ -20,7 +21,15 @@ const PATH = '/rentals';
 const rentalsRouter = express.Router();
 
 rentalsRouter.get(PATH, getQueryData, findCustomer, findGame, listAllRentals);
-rentalsRouter.post(PATH, validateRental, findCustomer, findGame, gameInStock, newRental);
+rentalsRouter.post(
+  PATH,
+  validateRental,
+  findCustomer,
+  findGame,
+  gameInStock,
+  reduceGameStock,
+  newRental,
+);
 rentalsRouter.post(`${PATH}/:id/return`, findRental, rentalIsOngoing, findGame, returnRental);
 rentalsRouter.delete(`${PATH}/:id`, findRental, rentalIsOngoing, deleteRental);
 

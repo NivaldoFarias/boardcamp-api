@@ -4,22 +4,22 @@ import client from './../database/postgres.js';
 import { DATABASE, ERROR } from './../blueprint/chalk.js';
 
 export async function listAllGames(_req, res) {
+  const {
+    query: { offset, limit, orderBy },
+  } = res.locals;
+
   try {
-    const result = await client.query(`SELECT * FROM games;`);
+    const result = await client.query(`SELECT * FROM games ${orderBy} ${offset} ${limit};`);
 
     result.rows.length
-      ? result.rows.forEach((row) => {
-          console.log(
-            chalk.blue(
-              `${DATABASE} id: ${chalk.bold(row.id)} | category id: ${chalk.bold(
-                row.categoryId,
-              )} | name: ${chalk.bold(row.name)} | total stock: ${chalk.bold(
-                row.stockTotal,
-              )} | price per day: ${chalk.bold(row.pricePerDay)}`,
-            ),
-          );
-        })
-      : console.log(chalk.blue(`${DATABASE} No games`));
+      ? console.log(
+          chalk.blue(
+            `${DATABASE} Found and sent ${chalk.bold(
+              result.rows.length,
+            )} entries from '${chalk.bold('games')}'`,
+          ),
+        )
+      : console.log(chalk.blue(`${DATABASE} No games found`));
 
     res.status(200).send(result.rows);
   } catch (error) {

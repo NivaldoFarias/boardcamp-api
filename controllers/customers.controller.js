@@ -4,19 +4,21 @@ import client from './../database/postgres.js';
 import { DATABASE, ERROR } from './../blueprint/chalk.js';
 
 export async function listAllCustomers(_req, res) {
+  const {
+    query: { offset, limit, orderBy },
+  } = res.locals;
+
   try {
-    const result = await client.query(`SELECT * FROM customers;`);
+    const result = await client.query(`SELECT * FROM customers ${orderBy} ${offset} ${limit};`);
 
     result.rows.length
-      ? result.rows.forEach((row) => {
-          console.log(
-            chalk.blue(
-              `${DATABASE} id: ${chalk.bold(row.id)} | name: ${chalk.bold(
-                row.name,
-              )} | phone: ${chalk.bold(row.phone)} | cpf: ${chalk.bold(row.cpf)}`,
-            ),
-          );
-        })
+      ? console.log(
+          chalk.blue(
+            `${DATABASE} Found and sent ${chalk.bold(
+              result.rows.length,
+            )} entries from '${chalk.bold('customers')}'`,
+          ),
+        )
       : console.log(chalk.blue(`${DATABASE} No customers found`));
 
     return res.status(200).send(result.rows);

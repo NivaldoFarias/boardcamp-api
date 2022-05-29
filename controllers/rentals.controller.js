@@ -4,13 +4,23 @@ import client from './../database/postgres.js';
 import { DATABASE, ERROR } from './../blueprint/chalk.js';
 
 export async function listAllRentals(_req, res) {
-  const { customerId, gameId } = res.locals;
+  const {
+    query: { offset, limit, orderBy, conditional },
+  } = res.locals;
 
   try {
-    const result = await possibleQueries();
+    const result = await client.query(
+      `${selectRentals()} ${conditional} ${orderBy} ${offset} ${limit};`,
+    );
 
     result.rows.length
-      ? console.log(chalk.blue(`${DATABASE} Number of rentals: ${result.rows.length}`))
+      ? console.log(
+          chalk.blue(
+            `${DATABASE} Found and sent ${chalk.bold(
+              result.rows.length,
+            )} entries from '${chalk.bold('rentals')}'`,
+          ),
+        )
       : console.log(chalk.blue(`${DATABASE} No rentals found`));
 
     const processedOutput = normalizeResult(result.rows);
@@ -22,21 +32,6 @@ export async function listAllRentals(_req, res) {
       message: `Internal server error while getting rentals`,
       detail: error,
     });
-  }
-
-  async function possibleQueries() {
-    if (customerId && gameId) {
-      return await client.query(`${selectRentals()} WHERE "customerId" = $1 AND "gameId" = $2;`, [
-        customerId,
-        gameId,
-      ]);
-    } else if (gameId && !customerId) {
-      return await client.query(`${selectRentals()} WHERE "gameId" = $1;`, [gameId]);
-    } else if (customerId && !gameId) {
-      return await client.query(`${selectRentals()} WHERE "customerId" = $1;`, [customerId]);
-    } else if (!customerId && !gameId) {
-      return await client.query(selectRentals());
-    }
   }
 }
 
@@ -73,9 +68,7 @@ export async function returnRental(_req, res) {
     game: { pricePerDay },
   } = res.locals;
   const returnDate = getDate();
-  const diffTime = Math.abs(returnDate - rentDate);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  const delayFee = diffDays * pricePerDay;
+  const delayFee = getDelayFee(returnDate, rentDate, pricePerDay);
 
   try {
     await client.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3;`, [
@@ -116,7 +109,8 @@ export async function deleteRental(_req, res) {
 
 const normalizeResult = (rentals) => {
   const output = [];
-  for (const rental of rentals) {
+  for (const index in rentals) {
+    const rental = rentals[index];
     output.push({
       ...rental,
       customer: {
@@ -130,6 +124,10 @@ const normalizeResult = (rentals) => {
         categoryName: rental.categoryName,
       },
     });
+    delete output[index].customerName;
+    delete output[index].gameName;
+    delete output[index].categoryId;
+    delete output[index].categoryName;
   }
   return output;
 };
@@ -140,7 +138,7 @@ const selectRentals = () => {
     customers.name AS "customerName",
     games.name AS "gameName",
     categories.id AS "categoryId",
-    categories.name AS "categoryName",
+    categories.name AS "categoryName"
     FROM 
       rentals
     INNER JOIN
@@ -155,6 +153,14 @@ const selectRentals = () => {
       categories
     ON
       games."categoryId" = categories.id`;
+};
+
+const getDelayFee = (returnDateISO, rentDateISO, pricePerDay) => {
+  const returnDate = new Date(returnDateISO);
+  const rentDate = new Date(rentDateISO.toISOString().split('T')[0]);
+  const diffTime = Math.abs(returnDate - rentDate);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays * pricePerDay;
 };
 
 const getDate = () => {

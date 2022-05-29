@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import SqlString from 'sqlstring';
 
 import { MIDDLEWARE, ERROR } from './../blueprint/chalk.js';
 import RentalSchema from './../models/rental.model.js';
@@ -19,14 +20,6 @@ export async function validateRental(req, res, next) {
 
   console.log(chalk.bold.magenta(`${MIDDLEWARE} Rental schema validated`));
   res.locals.rental = { customerId, gameId, daysRented };
-  next();
-}
-
-export async function getQueryData(req, res, next) {
-  const customerId = req.query?.customerId;
-  const gameId = req.query?.gameId;
-
-  res.locals.rental = { customerId, gameId };
   next();
 }
 
@@ -146,5 +139,53 @@ export async function gameInStock(_req, res, next) {
     });
   }
 
+  console.log(chalk.bold.magenta(`${MIDDLEWARE} Game is in stock`));
+  next();
+}
+
+export async function reduceGameStock(_req, res, next) {
+  const {
+    game: { id, stockTotal },
+  } = res.locals;
+
+  try {
+    await client.query(`UPDATE games SET "stockTotal" = $1 WHERE id = $2;`, [stockTotal - 1, id]);
+  } catch (error) {
+    console.log(chalk.red(`${ERROR} Internal server error`));
+    return res.status(500).send({
+      message: `Internal server error while reducing game stock`,
+      detail: error,
+    });
+  }
+
+  console.log(chalk.bold.magenta(`${MIDDLEWARE} Game stock reduced`));
+  next();
+}
+
+// QUERY DATA MIDDLEWARE
+export async function getQueryData(req, res, next) {
+  let conditional = '';
+  const customerId = req.query?.customerId;
+  const gameId = req.query?.gameId;
+
+  if (customerId && gameId) {
+    conditional = `WHERE "customerId" = ${SqlString.escape(
+      customerId,
+    )} AND "gameId" = ${SqlString.escape(gameId)}`;
+  } else if (customerId && !gameId) {
+    conditional = `WHERE "customerId" = ${SqlString.escape(customerId)}`;
+  } else if (!customerId && gameId) {
+    conditional = `WHERE "gameId" = ${SqlString.escape(gameId)}`;
+  }
+
+  const offset = req.query?.offset ? `OFFSET ${SqlString.escape(req.query.offset)}` : '';
+  const limit = req.query?.limit ? `LIMIT ${SqlString.escape(req.query.limit)}` : '';
+  const orderDirection = req.query?.desc ? 'DESC' : '';
+  const orderBy = req.query?.order
+    ? `ORDER BY ${SqlString.escape(req.query.order)} ${orderDirection}`
+    : '';
+
+  res.locals.query = { offset, limit, orderBy, conditional };
+  res.locals.rental = { customerId, gameId };
   next();
 }
