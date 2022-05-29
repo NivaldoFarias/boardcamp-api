@@ -8,7 +8,7 @@ export const url = new RegExp(
   'i',
 );
 export const image = new RegExp(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/im);
-export const cpf = new RegExp(/^\d{12}$/);
+export const cpf = new RegExp(/^\d{11}$/);
 export const phone = new RegExp(
   /(?:^\([0]?[1-9]{2}\)|^[0]?[1-9]{2}[\.-\s]?)[9]?[1-9]\d{3}[\.-\s]?\d{4}$/,
 );

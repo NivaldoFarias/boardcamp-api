@@ -1,14 +1,13 @@
 import chalk from 'chalk';
-import urlExist from 'url-exist';
 
 import { MIDDLEWARE, ERROR } from './../blueprint/chalk.js';
-import GameSchema from './../models/game.model.js';
+import CustomerSchema from './../models/customer.model.js';
 import client from './../database/postgres.js';
 
 export async function validateCustomer(req, res, next) {
   const { name, phone, cpf, birthday } = req.body;
 
-  const validate = GameSchema.validate({ name, phone, cpf, birthday }, { abortEarly: false });
+  const validate = CustomerSchema.validate({ name, phone, cpf, birthday }, { abortEarly: false });
   if (validate.error) {
     console.log(chalk.red(`${ERROR} Invalid input data`));
     return res.status(400).send({
