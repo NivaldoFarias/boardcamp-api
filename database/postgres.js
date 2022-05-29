@@ -7,7 +7,17 @@ import { DATABASE, ERROR } from './../blueprint/chalk.js';
 
 const { Client } = pg;
 const connectionString = process.env.DATABASE_URL;
-const client = new Client({ connectionString });
+const databaseConfig = {
+  connectionString,
+};
+
+if (process.env.MODE === 'PROD') {
+  databaseConfig.ssl = {
+    rejectUnauthorized: false,
+  };
+}
+
+const client = new Client(databaseConfig);
 
 try {
   await client.connect();
