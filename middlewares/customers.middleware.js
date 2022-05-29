@@ -8,7 +8,7 @@ import client from './../database/postgres.js';
 export async function validateCustomer(req, res, next) {
   const { name, phone, cpf, birthday } = req.body;
 
-  const validate = GameSchema.validate({ name, name, phone, cpf, birthday }, { abortEarly: false });
+  const validate = GameSchema.validate({ name, phone, cpf, birthday }, { abortEarly: false });
   if (validate.error) {
     console.log(chalk.red(`${ERROR} Invalid input data`));
     return res.status(400).send({
@@ -43,7 +43,7 @@ export async function findCustomer(req, res, next) {
     });
   }
 
-  console.log(chalk.blue(`${MIDDLEWARE} Customer exists`));
+  console.log(chalk.blue(`${MIDDLEWARE} Customer found`));
   next();
 }
 

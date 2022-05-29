@@ -11,7 +11,7 @@ const client = new Client({ connectionString });
 
 try {
   await client.connect();
-  console.log(chalk.blue(`${DATABASE} Connected to database`));
+  console.log(chalk.bold.blue(`${DATABASE} Connected to database`));
 } catch (error) {
   console.log(chalk.red(`${ERROR} Internal server error while connecting to database`));
 }
