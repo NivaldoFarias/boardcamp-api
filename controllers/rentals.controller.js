@@ -7,6 +7,7 @@ export async function listAllRentals(_req, res) {
   const {
     query: { offset, limit, orderBy, conditional },
   } = res.locals;
+
   try {
     const result = await client.query(
       `${selectRentals()} ${conditional} ${orderBy} ${offset} ${limit};`,

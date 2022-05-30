@@ -188,17 +188,46 @@ export async function rentalsQuery(req, res, next) {
     query: { conditional },
   } = res.locals;
 
+  // CONDITIONALS
   if (req.query?.status === 'open') {
     conditional += ` AND "returnDate" IS NULL`;
   } else if (req.query?.status === 'closed') {
     conditional += ` AND "returnDate" IS NOT NULL`;
   }
 
+  // STARTDATE
   req.query?.startDate
     ? (conditional += SqlString.format(` AND "rentDate" >= ?`, [req.query.startDate]))
     : null;
 
-  res.locals.query = { ...res.locals.query, conditional };
+  // ORDER BY
+  const orderFilters = [
+    'id',
+    'gameName',
+    'customerName',
+    'gameId',
+    'customerId',
+    'categoryId',
+    'categoryName',
+    'originalPrice',
+    'delayFee',
+    'rentDate',
+    'daysRented',
+  ];
+  const orderDirection = req.query?.desc ? 'DESC' : '';
+  let orderBy = '';
+  if (req.query?.order) {
+    if (!orderFilters.includes(req.query.order)) {
+      console.log(chalk.red(`${ERROR} Invalid order filter`));
+      return res.status(400).send({
+        message: 'Invalid order filter',
+        detail: `Ensure to provide a valid order filter`,
+      });
+    }
+    orderBy = `ORDER BY "${req.query.order}" ${orderDirection}`;
+  }
+
+  res.locals.query = { ...res.locals.query, conditional, orderBy };
   next();
 }
 

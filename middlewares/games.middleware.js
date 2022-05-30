@@ -90,3 +90,22 @@ export async function checkGame(_req, res, next) {
   console.log(chalk.magenta(`${MIDDLEWARE} Name is unique`));
   next();
 }
+
+export async function gamesQuery(req, res, next) {
+  const orderFilters = ['id', 'name', 'image', 'stockTotal', 'categoryId', 'pricePerDay'];
+  const orderDirection = req.query?.desc ? 'DESC' : '';
+  let orderBy = '';
+  if (req.query?.order) {
+    if (!orderFilters.includes(req.query.order)) {
+      console.log(chalk.red(`${ERROR} Invalid order filter`));
+      return res.status(400).send({
+        message: 'Invalid order filter',
+        detail: `Ensure to provide a valid order filter`,
+      });
+    }
+    orderBy = `ORDER BY "${req.query.order}" ${orderDirection}`;
+  }
+
+  res.locals.query = { ...res.locals.query, orderBy };
+  next();
+}
