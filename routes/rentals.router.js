@@ -24,7 +24,7 @@ import {
 const PATH = '/rentals';
 const rentalsRouter = express.Router();
 
-rentalsRouter.get(`${PATH}/metri`, metricsQuery, getMetrics);
+rentalsRouter.get(`${PATH}/metrics`, metricsQuery, getMetrics);
 rentalsRouter.get(
   PATH,
   getQueryData,

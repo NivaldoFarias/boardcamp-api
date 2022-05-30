@@ -189,16 +189,14 @@ export async function rentalsQuery(req, res, next) {
   } = res.locals;
 
   if (req.query?.status === 'open') {
-    conditional = `${conditional} AND "returnDate" IS NULL`;
+    conditional += ` AND "returnDate" IS NULL`;
   } else if (req.query?.status === 'closed') {
-    conditional = `${conditional} AND "returnDate" IS NOT NULL`;
+    conditional += ` AND "returnDate" IS NOT NULL`;
   }
 
-  if (req.query?.startDate) {
-    const startDate = new Date(req.query.startDate);
-    const dateISO = startDate.toISOString();
-    conditional = `${conditional} AND "rentDate" >= ${dateISO}`;
-  }
+  req.query?.startDate
+    ? (conditional += SqlString.format(` AND "rentDate" >= ?`, [req.query.startDate]))
+    : null;
 
   res.locals.query = { ...res.locals.query, conditional };
   next();
