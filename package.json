@@ -11,7 +11,7 @@
   },
   "keywords": [],
   "author": "Nivaldo Farias",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^5.0.1",
     "cors": "^2.8.5",

@@ -14,7 +14,7 @@ export async function listAllCustomers(_req, res) {
         COUNT(customers.id) AS "rentalsCount" 
       FROM 
         customers 
-      INNER JOIN
+      FULL OUTER JOIN
         rentals
       ON 
         customers.id = rentals."customerId"

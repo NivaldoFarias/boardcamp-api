@@ -15,7 +15,7 @@ export async function listAllGames(_req, res) {
         COUNT(games.id) AS "rentalsCount" 
       FROM 
         games 
-      INNER JOIN
+      FULL OUTER JOIN
         rentals
       ON 
         games.id = rentals."gameId"
