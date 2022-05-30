@@ -6,7 +6,7 @@
     <img src="https://raw.githubusercontent.com/bootcamp-ra/boardcamp-front/main/src/assets/images/logo.png" alt="Logo" width="160">
   </a>
 
-<h3 align="center">BoardCamp Project</h3>
+<h3 align="center">BoardCamp API</h3>
   <h6 align="center">WIP</h6>
   <p align="center">
     Back end Development Project
