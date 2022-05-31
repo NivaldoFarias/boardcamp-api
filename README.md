@@ -23,6 +23,87 @@
 ![Expressjs](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express.js&logoColor=white)
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 
+## Requirements
+
+- **Categories CRUD**
+
+  - [x] Categories table SCHEMA
+
+    ```js
+      {
+        id: 1,
+        name: 'Strategy',
+      }
+    ```
+
+  - [x] List all categories endpoint | **GET '/categories'**
+  - [x] Create a new gategory endpoint | **POST '/categories'**
+
+- **Games CRUD**
+
+  - [x] Games table SCHEMA
+
+    ```js
+      {
+        id: 1,
+        name: 'Monopoly',
+        image: 'http://',
+        stockTotal: 3,
+        categoryId: 1,
+        pricePerDay: 1500,
+      }
+    ```
+
+  - [x] List all games endpoint | **GET '/games'**
+  - [x] Create a new game endpoint | **POST '/games'**
+
+- **Customers CRUD**
+
+  - [x] Customers table SCHEMA
+
+    ```js
+      {
+        id: 1,
+        name: 'John doe',
+        phone: '21998899222',
+        cpf: '01234567890',
+        birthday: '1992-10-05'
+      }
+    ```
+
+  - [x] List all customers endpoint | **GET '/customers'**
+  - [x] Search a customer by id endpoint | **GET '/categories/:id'**
+  - [x] Create a new customer endpoint | **POST '/customers'**
+  - [x] Update a customer endpoint | **PUT '/categories'**
+
+- **Rentals CRUD**
+
+  - [x] Rentals table SCHEMA
+
+    ```js
+      {
+        id: 1,
+        customerId: 1,
+        gameId: 1,
+        rentDate: '2021-06-20',
+        daysRented: 3,
+        returnDate: null,
+        originalPrice: 4500,
+        delayFee: null
+      }
+    ```
+
+  - [x] List all rentals endpoint | **GET '/rentals'**
+  - [x] Create a new rental endpoint | **POST '/rentals'**
+  - [x] Return a rental endpoint | **POST '/rentals/:id/return'**
+  - [x] Delete a rental endpoint | **DELETE '/rentals/:id'**
+
+- **Bonus (optional)**
+  - [x] Pagination to every list all endpoints | **SQL offset, limit**
+  - [x] Filtering by date to rentals endpoint | **HTTP parameters 'status=open/closed', 'startDate={date}'**
+  - [x] Revenue Metrics endpoint | **GET '/rentals/metrics'**
+  - [x] Number of Rentals endpoint | **SQL count, group by**
+
 <!-- Study Playlist -->
 
 ### Study Playlist
