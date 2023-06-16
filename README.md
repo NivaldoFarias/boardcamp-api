@@ -1,20 +1,8 @@
-<div id="top"></div>
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/NivaldoFarias/boardcamp-api">
-    <img src="https://raw.githubusercontent.com/bootcamp-ra/boardcamp-front/main/src/assets/images/logo.png" alt="Logo" width="160">
-  </a>
+## Summary
 
-<h3 align="center">BoardCamp API</h3>
-  <h6 align="center">WIP</h6>
-  <p align="center">
-    Back end Development Project
-    <br />
-    <a href="https://github.com/NivaldoFarias/boardcamp-api/tree/main/app.js"><strong>Browse Nodejs code»</strong></a>
-</div>
+Web Development Project using React and Sass — Front end
 
-<br />
+- [**Browse Nodejs code»**](https://github.com/NivaldoFarias/boardcamp-api/tree/main/app.js)
 
 ## Built With
 
