@@ -106,7 +106,7 @@
 
 <!-- Study Playlist -->
 
-### Study Playlist
+## Study Playlist
 
 In this section I included all Youtube content I used or refered to while studying for this project. Keep in mind that most of these videos contain information that was not previously studied during class, which may affect some parts of the code that contain these _extras_.
 
@@ -114,7 +114,7 @@ In this section I included all Youtube content I used or refered to while studyi
 
 <!-- CONTACT -->
 
-### Contact
+## Contact
 
 [![LinkedIn][linkedin-shield]][linkedin-url]
 [![Slack][slack-shield]][slack-url]
